@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Digital Protexionist — The human touch in a digital world</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#05070f;
+    --panel:#0a0f1e;
+    --cobalt:#2f5bff;
+    --cobalt-deep:#1f3a93;
+    --ice:#8fb4ff;
+    --ink:#e8eefc;
+    --muted:#8a97b8;
+    --line:rgba(120,150,220,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Sora',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden;
+  }
+  .mono{font-family:'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;font-size:.7rem}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+  a{color:inherit;text-decoration:none}
+
+  /* nav */
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;
+    backdrop-filter:blur(12px);background:rgba(5,7,15,.55);
+    border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.02em}
+  .brand .dot{width:26px;height:26px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#bcd0ff, var(--cobalt) 45%, var(--cobalt-deep) 100%);
+    box-shadow:0 0 18px rgba(47,91,255,.7)}
+  .navlinks{display:flex;gap:34px}
+  .navlinks a{color:var(--muted);font-size:.9rem;transition:.2s}
+  .navlinks a:hover{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;gap:8px;
+    background:var(--cobalt);color:#fff;font-weight:600;font-size:.9rem;
+    padding:11px 20px;border-radius:8px;transition:.2s;
+    box-shadow:0 0 0 1px rgba(120,150,255,.4),0 10px 30px -10px rgba(47,91,255,.8)}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 0 0 1px rgba(120,150,255,.6),0 14px 40px -10px rgba(47,91,255,1)}
+  .btn.ghost{background:transparent;color:var(--ink);
+    box-shadow:inset 0 0 0 1px var(--line)}
+  .btn.ghost:hover{box-shadow:inset 0 0 0 1px rgba(120,150,220,.5)}
+
+  /* hero */
+  header{position:relative;min-height:100vh;display:flex;align-items:center;
+    background:#05070f}
+  .heroimg{position:absolute;inset:0;background:url('assets/hero.png') center right/cover no-repeat;
+    opacity:.95}
+  .heroimg::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg,#05070f 8%,rgba(5,7,15,.65) 42%,rgba(5,7,15,0) 72%)}
+  .heroimg::before{content:"";position:absolute;inset:0;
+    background:linear-gradient(0deg,#05070f 2%,rgba(5,7,15,0) 30%)}
+  .hero-content{position:relative;z-index:2;padding-top:64px}
+  .eyebrow{color:var(--ice);display:inline-flex;align-items:center;gap:10px;margin-bottom:26px}
+  .eyebrow::before{content:"";width:34px;height:1px;background:var(--ice);opacity:.6}
+  h1{font-size:clamp(2.6rem,6vw,4.6rem);font-weight:800;line-height:1.02;
+    letter-spacing:-.02em;max-width:16ch}
+  h1 .hl{color:transparent;background:linear-gradient(120deg,#bcd0ff,var(--cobalt));
+    -webkit-background-clip:text;background-clip:text}
+  .lead{color:var(--muted);font-size:1.15rem;max-width:46ch;margin:28px 0 38px}
+  .hero-cta{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .stat-row{display:flex;gap:44px;margin-top:64px;flex-wrap:wrap}
+  .stat b{display:block;font-size:1.9rem;font-weight:700;color:#fff}
+  .stat span{color:var(--muted);font-size:.85rem}
+
+  section{padding:120px 0;position:relative}
+  .sec-head{max-width:640px;margin-bottom:64px}
+  .sec-head h2{font-size:clamp(2rem,4vw,2.9rem);font-weight:700;letter-spacing:-.02em;margin:16px 0}
+  .sec-head p{color:var(--muted);font-size:1.08rem}
+
+  /* services */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .card{position:relative;background:linear-gradient(180deg,var(--panel),#070b16);
+    border:1px solid var(--line);border-radius:16px;padding:34px 30px;overflow:hidden;
+    transition:.25s}
+  .card:hover{transform:translateY(-4px);border-color:rgba(120,150,255,.45)}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent,var(--cobalt),transparent);opacity:.5}
+  .num{font-family:'JetBrains Mono',monospace;color:var(--cobalt);font-size:.8rem;letter-spacing:.1em}
+  .glyph{width:52px;height:52px;border-radius:12px;margin:20px 0;
+    display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(circle at 30% 30%,rgba(47,91,255,.35),rgba(31,58,147,.1));
+    border:1px solid rgba(120,150,255,.3)}
+  .glyph svg{width:26px;height:26px;stroke:var(--ice);fill:none;stroke-width:1.6}
+  .card h3{font-size:1.35rem;font-weight:600;margin-bottom:12px}
+  .card p{color:var(--muted);font-size:.98rem}
+
+  /* about */
+  .about{display:grid;grid-template-columns:.9fr 1.1fr;gap:60px;align-items:center}
+  .portrait{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--line);
+    box-shadow:0 40px 120px -40px rgba(47,91,255,.5)}
+  .portrait img{width:100%;display:block}
+  .portrait::after{content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,transparent 60%,rgba(5,7,15,.6))}
+  .about h2{font-size:clamp(2rem,4vw,2.7rem);font-weight:700;letter-spacing:-.02em;margin:14px 0 20px}
+  .about p{color:var(--muted);font-size:1.06rem;margin-bottom:18px}
+  .sig{margin-top:26px}
+  .sig b{display:block;color:#fff}
+  .sig span{color:var(--muted);font-size:.9rem}
+
+  /* cta band */
+  .cta-band{background:linear-gradient(120deg,var(--cobalt-deep),#0a1130);
+    border:1px solid rgba(120,150,255,.3);border-radius:24px;
+    padding:64px;text-align:center;position:relative;overflow:hidden}
+  .cta-band::before{content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 50% -20%,rgba(47,91,255,.55),transparent 60%)}
+  .cta-band h2{position:relative;font-size:clamp(2rem,4vw,3rem);font-weight:700;letter-spacing:-.02em}
+  .cta-band p{position:relative;color:#c3cff2;margin:18px auto 32px;max-width:52ch}
+
+  footer{border-top:1px solid var(--line);padding:50px 0;color:var(--muted);font-size:.85rem}
+  footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+
+  @media(max-width:900px){
+    .grid3{grid-template-columns:1fr}
+    .about{grid-template-columns:1fr}
+    .navlinks{display:none}
+  }
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <div class="brand"><span class="dot"></span>THE DIGITAL PROTEXIONIST</div>
+  <div class="navlinks">
+    <a href="#services">Services</a>
+    <a href="#about">The Partnerpreneur</a>
+    <a href="#partners">Partners</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <a href="#contact" class="btn">Start a conversation</a>
+</div></nav>
+
+<header>
+  <div class="heroimg"></div>
+  <div class="wrap hero-content">
+    <span class="eyebrow mono">Strategy · Solutions · Partnerships</span>
+    <h1>The <span class="hl">human</span> touch in a digital world.</h1>
+    <p class="lead">We lead change from strategy to design to delivery — a partner mentality, not a vendor. Innovation, expertise, and the systems that drive it.</p>
+    <div class="hero-cta">
+      <a href="#contact" class="btn">Start a conversation →</a>
+      <a href="#services" class="btn ghost">See how we work</a>
+    </div>
+    <div class="stat-row">
+      <div class="stat"><b>Strategy</b><span>Deep listening first</span></div>
+      <div class="stat"><b>Delivery</b><span>Design through launch</span></div>
+      <div class="stat"><b>Trust</b><span>Vetted partner network</span></div>
+    </div>
+  </div>
+</header>
+
+<section id="services">
+ <div class="wrap">
+  <div class="sec-head">
+    <span class="mono" style="color:var(--ice)">// What we do</span>
+    <h2>Three ways we move you forward.</h2>
+    <p>Every engagement is built on the same engine: expertise, a system for driving success, and a partner who stays in the room.</p>
+  </div>
+  <div class="grid3">
+    <div class="card">
+      <div class="num">01</div>
+      <div class="glyph"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg></div>
+      <h3>Digital Strategy</h3>
+      <p>Expertise and deep experience, leading with attentive listening. We map where you are and chart where you're going before a line of code.</p>
+    </div>
+    <div class="card">
+      <div class="num">02</div>
+      <div class="glyph"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg></div>
+      <h3>Digital Solutions</h3>
+      <p>Leadership of change from strategy to design to delivery. We build the thing, ship it, and stand behind how it performs.</p>
+    </div>
+    <div class="card">
+      <div class="num">03</div>
+      <div class="glyph"><svg viewBox="0 0 24 24"><circle cx="7" cy="12" r="3"/><circle cx="17" cy="12" r="3"/><path d="M10 12h4"/></svg></div>
+      <h3>Digital Partnerships</h3>
+      <p>Connecting you with the most trusted partners in the space — a curated network, matched to the outcome you need.</p>
+    </div>
+  </div>
+ </div>
+</section>
+
+<section id="about" style="padding-top:40px">
+ <div class="wrap">
+  <div class="about">
+    <div class="portrait"><img src="assets/scott.jpg" alt="Scott R. King" /></div>
+    <div>
+      <span class="mono" style="color:var(--ice)">// The Partnerpreneur</span>
+      <h2>A partner mentality, not a vendor.</h2>
+      <p>The Digital Protexionist was built on a simple conviction: the human touch is what's missing from most digital work. Technology is the easy part. Judgment, trust, and staying accountable through delivery — that's the hard part, and it's the part we own.</p>
+      <p>We bring innovation, expertise, and a system for driving success into every relationship. You get a partner who's invested in the outcome, not a vendor counting hours.</p>
+      <div class="sig">
+        <b>Scott R. King</b>
+        <span>Founder / CXO — The Digital Protexionist</span>
+      </div>
+    </div>
+  </div>
+ </div>
+</section>
+
+<section id="contact">
+ <div class="wrap">
+  <div class="cta-band">
+    <h2>Let's build something that lasts.</h2>
+    <p>Tell us what you're driving toward. We'll bring the strategy, the delivery, and the partners to get you there.</p>
+    <a href="mailto:protexions@protexionist.com" class="btn" style="position:relative">Start a conversation →</a>
+  </div>
+ </div>
+</section>
+
+<footer><div class="wrap">
+  <div class="brand" style="font-size:.9rem"><span class="dot" style="width:20px;height:20px"></span>THE DIGITAL PROTEXIONIST</div>
+  <div>© 2026 The Digital Protexionist · The human touch in a digital world.</div>
+</div></footer>
+
+</body>
+</html>
