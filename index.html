@@ -142,6 +142,81 @@
     .about{grid-template-columns:1fr}
     .navlinks{display:none}
   }
+
+  /* ---- Sharon: floating chat agent ---- */
+  #sharon-fab{position:fixed;right:24px;bottom:24px;z-index:80;
+    display:flex;align-items:center;gap:12px;cursor:pointer;
+    background:var(--cobalt);color:#fff;border:none;
+    padding:11px 18px 11px 12px;border-radius:40px;font-family:'Sora',sans-serif;font-weight:600;font-size:.92rem;
+    box-shadow:0 0 0 1px rgba(120,150,255,.45),0 16px 44px -12px rgba(47,91,255,.9);
+    transition:transform .2s,box-shadow .2s}
+  #sharon-fab:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(120,150,255,.7),0 20px 54px -12px rgba(47,91,255,1)}
+  #sharon-fab .orb{width:38px;height:38px;border-radius:50%;flex:0 0 auto;position:relative;
+    background:radial-gradient(circle at 35% 30%,#bcd2ff,#2e72d1 55%,#0b1d44);
+    box-shadow:0 0 0 2px rgba(255,255,255,.25) inset,0 0 18px rgba(46,114,209,.8)}
+  #sharon-fab .orb::after{content:"";position:absolute;inset:0;border-radius:50%;
+    box-shadow:0 0 0 2px rgba(46,114,209,.55);animation:sharon-pulse 2.4s ease-out infinite}
+  @keyframes sharon-pulse{0%{box-shadow:0 0 0 0 rgba(46,114,209,.55)}100%{box-shadow:0 0 0 16px rgba(46,114,209,0)}}
+  #sharon-fab.open{opacity:0;pointer-events:none;transform:scale(.9)}
+
+  #sharon-panel{position:fixed;right:24px;bottom:24px;z-index:81;width:372px;max-width:calc(100vw - 32px);
+    height:560px;max-height:calc(100vh - 48px);display:flex;flex-direction:column;
+    background:var(--panel);border:1px solid rgba(120,150,255,.25);border-radius:20px;overflow:hidden;
+    box-shadow:0 30px 80px -20px rgba(0,0,0,.8),0 0 0 1px rgba(120,150,255,.12);
+    opacity:0;transform:translateY(16px) scale(.98);pointer-events:none;transition:opacity .22s,transform .22s}
+  #sharon-panel.open{opacity:1;transform:none;pointer-events:auto}
+  .sharon-head{display:flex;align-items:center;gap:12px;padding:16px 18px;
+    background:linear-gradient(120deg,var(--cobalt-deep),#0a1130);border-bottom:1px solid var(--line)}
+  .sharon-head .orb{width:40px;height:40px;border-radius:50%;flex:0 0 auto;
+    background:radial-gradient(circle at 35% 30%,#bcd2ff,#2e72d1 55%,#0b1d44);
+    box-shadow:0 0 18px rgba(46,114,209,.7)}
+  .sharon-head .who{flex:1;min-width:0}
+  .sharon-head .who b{display:block;font-size:.98rem;font-weight:700}
+  .sharon-head .who span{display:block;font-size:.74rem;color:var(--ice);margin-top:2px}
+  .sharon-head .status{display:inline-flex;align-items:center;gap:6px;font-size:.7rem;color:var(--muted)}
+  .sharon-head .status i{width:7px;height:7px;border-radius:50%;background:#3ad07a;box-shadow:0 0 8px #3ad07a}
+  .sharon-head .x{background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.3rem;line-height:1;padding:2px 4px}
+  .sharon-head .x:hover{color:var(--ink)}
+
+  /* intro "video" card */
+  .sharon-video{position:relative;height:186px;flex:0 0 auto;overflow:hidden;
+    background:radial-gradient(circle at 50% 20%,#12306a,#060b1a 70%);border-bottom:1px solid var(--line)}
+  .sharon-video .grid-bg{position:absolute;inset:0;opacity:.35;
+    background-image:linear-gradient(rgba(120,150,255,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(120,150,255,.14) 1px,transparent 1px);
+    background-size:26px 26px;mask-image:radial-gradient(circle at 50% 40%,#000,transparent 75%)}
+  .sharon-video .bigorb{position:absolute;left:50%;top:52px;transform:translateX(-50%);
+    width:66px;height:66px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,#d6e4ff,#2e72d1 52%,#0b1d44);
+    box-shadow:0 0 34px rgba(46,114,209,.85),0 0 0 3px rgba(255,255,255,.18) inset}
+  .sharon-video .wave{position:absolute;left:0;right:0;bottom:52px;height:44px;display:flex;align-items:center;justify-content:center;gap:4px}
+  .sharon-video .wave i{width:3px;height:8px;border-radius:2px;background:var(--ice);opacity:.85;
+    animation:sharon-wave 1s ease-in-out infinite}
+  @keyframes sharon-wave{0%,100%{height:6px;opacity:.5}50%{height:30px;opacity:1}}
+  .sharon-video.paused .wave i{animation-play-state:paused;height:6px}
+  .sharon-video .cap{position:absolute;left:0;right:0;bottom:14px;text-align:center;padding:0 20px;
+    font-size:.82rem;color:#dfe8ff;min-height:1.1em}
+  .sharon-video .cap .role{font-family:'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;font-size:.62rem;color:var(--ice);display:block;margin-bottom:5px}
+  .sharon-video .bar{position:absolute;left:0;bottom:0;height:3px;background:var(--cobalt);width:0;box-shadow:0 0 10px var(--cobalt)}
+  .sharon-video .replay{position:absolute;right:12px;top:12px;background:rgba(5,7,15,.5);border:1px solid var(--line);
+    color:var(--ice);border-radius:20px;font-size:.68rem;padding:5px 11px;cursor:pointer;display:none;font-family:'Sora',sans-serif}
+  .sharon-video.done .replay{display:inline-block}
+
+  .sharon-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+  .s-msg{max-width:85%;padding:10px 13px;border-radius:14px;font-size:.86rem;line-height:1.45}
+  .s-msg.bot{align-self:flex-start;background:#101832;border:1px solid var(--line);border-bottom-left-radius:4px}
+  .s-msg.user{align-self:flex-end;background:var(--cobalt);color:#fff;border-bottom-right-radius:4px}
+  .sharon-chips{display:flex;flex-wrap:wrap;gap:8px;padding:0 16px 12px}
+  .sharon-chips button{background:transparent;border:1px solid rgba(120,150,255,.35);color:var(--ice);
+    border-radius:20px;font-size:.76rem;padding:7px 12px;cursor:pointer;font-family:'Sora',sans-serif;transition:.18s}
+  .sharon-chips button:hover{background:rgba(46,114,209,.16);color:#fff}
+  .sharon-foot{padding:12px 16px;border-top:1px solid var(--line)}
+  .sharon-foot a{display:block;text-align:center;background:var(--cobalt);color:#fff;font-weight:600;font-size:.86rem;
+    padding:11px;border-radius:10px;box-shadow:0 10px 30px -10px rgba(47,91,255,.8)}
+
+  @media(max-width:520px){
+    #sharon-panel{right:0;left:0;bottom:0;width:100%;max-width:100%;height:82vh;border-radius:20px 20px 0 0}
+    #sharon-fab span.lbl{display:none}
+  }
 </style>
 </head>
 <body>
@@ -317,5 +392,128 @@
   <div>© 2026 The Digital Protexionist · The HUMAN touch needed in a digital world.</div>
 </div></footer>
 
+<!-- ---- Sharon: floating chat agent ---- -->
+<button id="sharon-fab" aria-label="Chat with Sharon">
+  <span class="orb"></span>
+  <span class="lbl">Ask Sharon</span>
+</button>
+
+<div id="sharon-panel" role="dialog" aria-label="Sharon, FAQ and document protection agent">
+  <div class="sharon-head">
+    <span class="orb"></span>
+    <div class="who">
+      <b>Sharon</b>
+      <span>FAQ &amp; Document Protection Agent</span>
+    </div>
+    <span class="status"><i></i>online</span>
+    <button class="x" id="sharon-close" aria-label="Close">&times;</button>
+  </div>
+
+  <div class="sharon-video paused" id="sharon-video">
+    <div class="grid-bg"></div>
+    <div class="bigorb"></div>
+    <div class="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="cap"><span class="role">// Intro</span><span id="sharon-cap"></span></div>
+    <div class="bar" id="sharon-bar"></div>
+    <button class="replay" id="sharon-replay">▷ Replay</button>
+  </div>
+
+  <div class="sharon-body" id="sharon-body"></div>
+
+  <div class="sharon-chips" id="sharon-chips"></div>
+  <div class="sharon-foot">
+    <a href="#contact" id="sharon-cta">Start a conversation →</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  var fab=document.getElementById('sharon-fab'),
+      panel=document.getElementById('sharon-panel'),
+      video=document.getElementById('sharon-video'),
+      capEl=document.getElementById('sharon-cap'),
+      barEl=document.getElementById('sharon-bar'),
+      replay=document.getElementById('sharon-replay'),
+      body=document.getElementById('sharon-body'),
+      chipsWrap=document.getElementById('sharon-chips');
+
+  // scripted intro "video" — timed caption lines over the animated waveform
+  var script=[
+    {t:0,   s:"Hi, I'm Sharon."},
+    {t:2200,s:"I look after your FAQs and document protection here at The Digital Protexionist."},
+    {t:5600,s:"Ask me anything — or I'll point you to the right human."}
+  ];
+  var DUR=8200, introTimer=null, running=false;
+
+  function runIntro(){
+    if(running) return; running=true;
+    video.classList.remove('done'); video.classList.add('paused');
+    capEl.textContent=''; barEl.style.transition='none'; barEl.style.width='0';
+    // kick the waveform + progress bar
+    requestAnimationFrame(function(){
+      video.classList.remove('paused');
+      barEl.style.transition='width '+DUR+'ms linear';
+      barEl.style.width='100%';
+    });
+    var timers=[];
+    script.forEach(function(line){
+      timers.push(setTimeout(function(){ typeCap(line.s); }, line.t));
+    });
+    introTimer=setTimeout(function(){
+      video.classList.add('paused','done'); running=false;
+    }, DUR);
+  }
+  function typeCap(str){
+    capEl.textContent=''; var i=0;
+    (function step(){ if(i<=str.length){ capEl.textContent=str.slice(0,i++); setTimeout(step,18);} })();
+  }
+
+  // FAQ knowledge base (canned, static)
+  var faqs=[
+    {q:"What do you protect?",
+     a:"We safeguard the documents and data behind your business — contracts, IP, client records — with the right controls, backups, and access hygiene so nothing walks out the door."},
+    {q:"What does The Digital Protexionist do?",
+     a:"Three pillars: Digital Strategy, Digital Solutions, and Digital Partnerships. We bring the human touch to a digital world — strategy through delivery, and we stand behind how it performs."},
+    {q:"How do we start?",
+     a:"Tell us what you're driving toward and we'll scope it together. Tap “Start a conversation” below and Scott's team picks it up directly."},
+    {q:"Are you a real person?",
+     a:"I'm a ScotBot — one of the agents that carry the busywork. For the judgment calls, you'll talk to a real human on the team. Partner mentality, not a vendor."}
+  ];
+
+  function addMsg(text,who){
+    var m=document.createElement('div');
+    m.className='s-msg '+(who||'bot'); m.textContent=text;
+    body.appendChild(m); body.scrollTop=body.scrollHeight;
+  }
+  function renderChips(){
+    chipsWrap.innerHTML='';
+    faqs.forEach(function(f){
+      var b=document.createElement('button'); b.textContent=f.q;
+      b.onclick=function(){
+        addMsg(f.q,'user');
+        setTimeout(function(){ addMsg(f.a,'bot'); }, 380);
+      };
+      chipsWrap.appendChild(b);
+    });
+  }
+
+  var opened=false;
+  function open(){
+    panel.classList.add('open'); fab.classList.add('open');
+    if(!opened){
+      opened=true;
+      renderChips();
+      runIntro();
+      setTimeout(function(){ addMsg("Hi! I'm Sharon. Pick a question below, or start a conversation and I'll route you to the team.",'bot'); }, DUR-1200);
+    }
+  }
+  function close(){ panel.classList.remove('open'); fab.classList.remove('open'); }
+
+  fab.onclick=open;
+  document.getElementById('sharon-close').onclick=close;
+  replay.onclick=runIntro;
+  document.getElementById('sharon-cta').onclick=function(){ close(); };
+})();
+</script>
 </body>
 </html>
