@@ -11,8 +11,8 @@
   :root{
     --bg:#05070f;
     --panel:#0a0f1e;
-    --cobalt:#2f5bff;
-    --cobalt-deep:#1f3a93;
+    --cobalt:#2e72d1;      /* main blue sampled from the hero art glow */
+    --cobalt-deep:#183a7a;
     --ice:#8fb4ff;
     --ink:#e8eefc;
     --muted:#8a97b8;
@@ -35,9 +35,8 @@
     border-bottom:1px solid var(--line)}
   nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
   .brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.02em}
-  .brand .dot{width:26px;height:26px;border-radius:50%;
-    background:radial-gradient(circle at 35% 30%,#bcd0ff, var(--cobalt) 45%, var(--cobalt-deep) 100%);
-    box-shadow:0 0 18px rgba(47,91,255,.7)}
+  .brand .logo{width:34px;height:34px;border-radius:50%;display:block;
+    box-shadow:0 0 20px rgba(46,114,209,.55)}
   .navlinks{display:flex;gap:34px}
   .navlinks a{color:var(--muted);font-size:.9rem;transition:.2s}
   .navlinks a:hover{color:var(--ink)}
@@ -129,7 +128,7 @@
 <body>
 
 <nav><div class="wrap">
-  <div class="brand"><span class="dot"></span>THE DIGITAL PROTEXIONIST</div>
+  <div class="brand"><img src="assets/logo.png" class="logo" alt="The Digital Protexionist" />THE DIGITAL PROTEXIONIST</div>
   <div class="navlinks">
     <a href="#services">Services</a>
     <a href="#about">The Partnerpreneur</a>
@@ -216,7 +215,7 @@
 </section>
 
 <footer><div class="wrap">
-  <div class="brand" style="font-size:.9rem"><span class="dot" style="width:20px;height:20px"></span>THE DIGITAL PROTEXIONIST</div>
+  <div class="brand" style="font-size:.9rem"><img src="assets/logo.png" class="logo" style="width:26px;height:26px" alt="The Digital Protexionist" />THE DIGITAL PROTEXIONIST</div>
   <div>© 2026 The Digital Protexionist · The HUMAN touch needed in a digital world.</div>
 </div></footer>
 
