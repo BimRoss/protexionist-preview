@@ -96,8 +96,11 @@
   /* partners */
   .partner{display:block}
   .partner .tag{color:var(--cobalt);font-size:.72rem}
-  .partner .glyph{font-family:'JetBrains Mono',monospace;font-weight:500;
-    color:var(--ice);font-size:1.05rem;letter-spacing:.06em}
+  .partner .plogo{height:84px;border-radius:12px;margin:14px 0 20px;padding:16px 18px;
+    background:linear-gradient(160deg,#ffffff,#e6eeff);
+    border:1px solid rgba(120,150,255,.3);
+    display:flex;align-items:center;justify-content:center}
+  .partner .plogo img{max-height:100%;max-width:88%;width:auto;object-fit:contain;display:block}
   .partner .visit{display:inline-block;margin-top:18px;color:var(--ice);
     font-size:.72rem;transition:.2s}
   .partner:hover .visit{color:#fff;transform:translateX(3px)}
@@ -321,21 +324,21 @@
   <div class="grid3">
     <a class="card partner" href="https://ezdoctracker.us/" target="_blank" rel="noopener">
       <span class="tag mono">Document trust</span>
-      <div class="glyph">EZ</div>
+      <div class="plogo"><img src="assets/partner-ezdoctracker.png" alt="EZDocTracker" /></div>
       <h3>EZDocTracker</h3>
       <p>Establishes provenance, integrity, and chain of custody for financial documents, stopping fraud before it starts.</p>
       <span class="visit mono">Visit →</span>
     </a>
     <a class="card partner" href="https://simlabinc.com/" target="_blank" rel="noopener">
       <span class="tag mono">Digital twins</span>
-      <div class="glyph">SL</div>
+      <div class="plogo"><img src="assets/partner-simlab.png" alt="SimLab Inc" /></div>
       <h3>SimLab Inc</h3>
       <p>A digital-twin platform uniting building data, IoT and KNX controls, and construction management in one navigable 3D interface.</p>
       <span class="visit mono">Visit →</span>
     </a>
     <a class="card partner" href="https://www.twinflowconsulting.com/" target="_blank" rel="noopener">
       <span class="tag mono">Digital twin capture</span>
-      <div class="glyph">TF</div>
+      <div class="plogo"><img src="assets/partner-twinflow.png" alt="TwinFlow Consulting" /></div>
       <h3>TwinFlow Consulting</h3>
       <p>Turns physical buildings and assets into accurate, navigable 3D digital twins for operations and promotion.</p>
       <span class="visit mono">Visit →</span>
@@ -354,19 +357,19 @@
   <div class="grid3">
     <div class="card scotbot">
       <div class="bot-tile"><img src="assets/scotbot-0.png" alt="Agent 0 — The Digital Strategist" /></div>
-      <div class="num">// AGENT_0</div>
+      <div class="num">// AGENT 0</div>
       <h3>The Digital Strategist</h3>
       <p class="bot-quote">"Zero can be a great place to start from!"</p>
     </div>
     <div class="card scotbot">
       <div class="bot-tile"><img src="assets/scotbot-1.png" alt="Agent 1 — The Digital Solutionist" /></div>
-      <div class="num">// AGENT_1</div>
+      <div class="num">// AGENT 1</div>
       <h3>The Digital Solutionist</h3>
       <p class="bot-quote">"Building once, to serve many!"</p>
     </div>
     <div class="card scotbot">
       <div class="bot-tile"><img src="assets/scotbot-2.png" alt="Agent 2 — The Digital Partner" /></div>
-      <div class="num">// AGENT_2</div>
+      <div class="num">// AGENT 2</div>
       <h3>The Digital Partner</h3>
       <p class="bot-quote">"Building together, HUMAN + Machine!"</p>
     </div>
