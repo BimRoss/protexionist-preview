@@ -102,6 +102,15 @@
     font-size:.72rem;transition:.2s}
   .partner:hover .visit{color:#fff;transform:translateX(3px)}
 
+  /* scotbots */
+  .scotbot .bot-tile{border-radius:12px;margin-bottom:22px;padding:16px;
+    background:linear-gradient(160deg,#eef3ff,#d3e0ff);
+    border:1px solid rgba(120,150,255,.3);
+    display:flex;align-items:center;justify-content:center}
+  .scotbot .bot-tile img{width:100%;max-width:172px;height:auto;display:block}
+  .scotbot h3{margin-top:2px}
+  .bot-quote{color:var(--ice);font-style:italic;font-size:1rem}
+
   /* buy compute */
   .gpu-band{position:relative;display:block;border-radius:20px;overflow:hidden;
     border:1px solid var(--line);box-shadow:0 40px 120px -50px rgba(47,91,255,.5);transition:.25s}
@@ -152,8 +161,8 @@
     transition:transform .2s,box-shadow .2s}
   #sharon-fab:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(120,150,255,.7),0 20px 54px -12px rgba(47,91,255,1)}
   #sharon-fab .orb{width:38px;height:38px;border-radius:50%;flex:0 0 auto;position:relative;
-    background:radial-gradient(circle at 35% 30%,#bcd2ff,#2e72d1 55%,#0b1d44);
-    box-shadow:0 0 0 2px rgba(255,255,255,.25) inset,0 0 18px rgba(46,114,209,.8)}
+    background:url('assets/sharon.png') center 18%/cover;
+    box-shadow:0 0 0 2px rgba(143,180,255,.55) inset,0 0 18px rgba(46,114,209,.8)}
   #sharon-fab .orb::after{content:"";position:absolute;inset:0;border-radius:50%;
     box-shadow:0 0 0 2px rgba(46,114,209,.55);animation:sharon-pulse 2.4s ease-out infinite}
   @keyframes sharon-pulse{0%{box-shadow:0 0 0 0 rgba(46,114,209,.55)}100%{box-shadow:0 0 0 16px rgba(46,114,209,0)}}
@@ -168,8 +177,8 @@
   .sharon-head{display:flex;align-items:center;gap:12px;padding:16px 18px;
     background:linear-gradient(120deg,var(--cobalt-deep),#0a1130);border-bottom:1px solid var(--line)}
   .sharon-head .orb{width:40px;height:40px;border-radius:50%;flex:0 0 auto;
-    background:radial-gradient(circle at 35% 30%,#bcd2ff,#2e72d1 55%,#0b1d44);
-    box-shadow:0 0 18px rgba(46,114,209,.7)}
+    background:url('assets/sharon.png') center 18%/cover;
+    box-shadow:0 0 0 1px rgba(143,180,255,.5) inset,0 0 18px rgba(46,114,209,.7)}
   .sharon-head .who{flex:1;min-width:0}
   .sharon-head .who b{display:block;font-size:.98rem;font-weight:700}
   .sharon-head .who span{display:block;font-size:.74rem;color:var(--ice);margin-top:2px}
@@ -184,10 +193,12 @@
   .sharon-video .grid-bg{position:absolute;inset:0;opacity:.35;
     background-image:linear-gradient(rgba(120,150,255,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(120,150,255,.14) 1px,transparent 1px);
     background-size:26px 26px;mask-image:radial-gradient(circle at 50% 40%,#000,transparent 75%)}
-  .sharon-video .bigorb{position:absolute;left:50%;top:52px;transform:translateX(-50%);
-    width:66px;height:66px;border-radius:50%;
-    background:radial-gradient(circle at 35% 30%,#d6e4ff,#2e72d1 52%,#0b1d44);
-    box-shadow:0 0 34px rgba(46,114,209,.85),0 0 0 3px rgba(255,255,255,.18) inset}
+  .sharon-video .bigorb{position:absolute;left:50%;top:30px;transform:translateX(-50%);
+    width:88px;height:88px;border-radius:50%;
+    background:url('assets/sharon.png') center 16%/cover;
+    box-shadow:0 0 40px rgba(46,114,209,.9),0 0 0 3px rgba(143,180,255,.55),0 0 0 8px rgba(46,114,209,.18)}
+  .sharon-video .bigorb::after{content:"";position:absolute;inset:-3px;border-radius:50%;
+    box-shadow:0 0 0 2px rgba(143,180,255,.4);animation:sharon-pulse 2.6s ease-out infinite}
   .sharon-video .wave{position:absolute;left:0;right:0;bottom:52px;height:44px;display:flex;align-items:center;justify-content:center;gap:4px}
   .sharon-video .wave i{width:3px;height:8px;border-radius:2px;background:var(--ice);opacity:.85;
     animation:sharon-wave 1s ease-in-out infinite}
