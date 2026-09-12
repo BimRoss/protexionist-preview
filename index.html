@@ -56,7 +56,7 @@
 
   /* hero */
   header{position:relative;min-height:100vh;display:flex;align-items:center;
-    background:#05070f}
+    background:#05070f;z-index:1}
   .heroimg{position:absolute;inset:0;background:url('assets/hero.png') center right/cover no-repeat;
     opacity:.95}
   .heroimg::after{content:"";position:absolute;inset:0;
@@ -76,7 +76,20 @@
   .stat b{display:block;font-size:1.9rem;font-weight:700;color:#fff}
   .stat span{color:var(--muted);font-size:.85rem}
 
-  section{padding:60px 0;position:relative}
+  section{padding:60px 0;position:relative;z-index:1}
+  /* ambient energy field — faint snippets of the hero waves echoing behind the lower sections.
+     screen blend drops the dark parts of the art, so only the cobalt waves glow through the gaps. */
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      url('assets/hero.png') -12% 10%/44% auto no-repeat,
+      url('assets/hero.png') 118% 46%/38% auto no-repeat,
+      url('assets/hero.png') 34% 82%/50% auto no-repeat,
+      url('assets/hero.png') 96% 104%/30% auto no-repeat;
+    opacity:.32;mix-blend-mode:screen;filter:saturate(1.25)}
+  @media (max-width:720px){body::before{opacity:.2;
+    background:
+      url('assets/hero.png') -30% 14%/78% auto no-repeat,
+      url('assets/hero.png') 130% 70%/72% auto no-repeat}}
   .sec-head{max-width:640px;margin-bottom:64px}
   .sec-head h2{font-size:clamp(2rem,4vw,2.9rem);font-weight:700;letter-spacing:-.02em;margin:16px 0}
   .sec-head p{color:var(--muted);font-size:1.08rem}
@@ -362,10 +375,6 @@
   <div class="sec-head">
     <span class="mono" style="color:var(--ice)">// Impactful Work</span>
     <h2>Three ways we move you forward.</h2>
-    <p>Every engagement is built on the same engine: expertise, a system for driving success, and a partner who stays in the room.</p>
-    <p>Scott R. King is a business intelligence and digital transformation executive with more than 20 years leading enterprise analytics, finance, technology, and operations. As a CXO and strategic consultant, he turns complex business challenges into scalable digital solutions: BI strategy, data architecture, predictive and prescriptive analytics, executive dashboards, revenue optimization, and process transformation.</p>
-    <p>He has led high-impact work at Paychex, Concur Technologies, Xerox, LeadVenture, and Nixon Peabody, and fractionally as The Digital Protexionist™. Along the way he has generated more than $2 million in new annual recurring revenue, eliminated over 100,000 service hours, and built analytics infrastructure designed to support 10X sales growth.</p>
-    <p>Scott is known for rebuilding momentum on stalled projects, aligning stakeholders, and translating data into clear strategy for executives and business leaders.</p>
   </div>
   <div class="grid3">
     <div class="card">
@@ -389,6 +398,12 @@
       <div class="card-sub">Trust: Vetted partner network</div>
       <p>Connecting you with the most trusted partners in the space: a curated network, matched to the outcome you need.</p>
     </div>
+  </div>
+  <div class="sec-head" style="margin-top:48px">
+    <p>Every engagement is built on the same engine: expertise, a system for driving success, and a partner who stays in the room.</p>
+    <p>Scott R. King is a business intelligence and digital transformation executive with more than 20 years leading enterprise analytics, finance, technology, and operations. As a CXO and strategic consultant, he turns complex business challenges into scalable digital solutions: BI strategy, data architecture, predictive and prescriptive analytics, executive dashboards, revenue optimization, and process transformation.</p>
+    <p>He has led high-impact work at Paychex, Concur Technologies, Xerox, LeadVenture, and Nixon Peabody, and fractionally as The Digital Protexionist™. Along the way he has generated more than $2 million in new annual recurring revenue, eliminated over 100,000 service hours, and built analytics infrastructure designed to support 10X sales growth.</p>
+    <p>Scott is known for rebuilding momentum on stalled projects, aligning stakeholders, and translating data into clear strategy for executives and business leaders.</p>
   </div>
  </div>
 </section>
