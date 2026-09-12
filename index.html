@@ -818,12 +818,26 @@
     });
   }
 
+  // Materials grouped into category chips. First category reuses the FAQ
+  // knowledge base above; the rest are scaffolded and show a holding line
+  // until content lands. Grow any category by pushing items (answer text, or
+  // link:{label,url}) into its items[] — the chip UI scales automatically.
+  var library=[
+    {id:'faq',   label:'Common questions', items:faqs},
+    {id:'cases', label:'Use cases',        items:[],
+     soon:"Project stories and case studies are loading in here. Want to see work like yours? Tap “Talk to a human” and Scott will bring the right example."},
+    {id:'proof', label:'Testimonials',     items:[],
+     soon:"Client words are landing here soon. In the meantime, Scott's glad to connect you with a reference on a call."},
+    {id:'reads', label:'Articles & posts', items:[],
+     soon:"Scott's writing and LinkedIn posts will collect here. Ask about a specific topic and I'll point you to the right read."}
+  ];
+
   function faqMenu(){
     clearChoices();
-    bot("Happy to help. Pick a question, or jump into scoping when you're ready.", function(){
-      faqs.forEach(function(f){
-        var b=document.createElement('button'); b.textContent=f.q;
-        b.onclick=function(){ addMsg(f.q,'user'); bot(f.a); };
+    bot("Happy to help. Pick a category to explore, or jump into scoping when you're ready.", function(){
+      library.forEach(function(cat){
+        var b=document.createElement('button'); b.className='cat'; b.textContent=cat.label;
+        b.onclick=function(){ addMsg(cat.label,'user'); clearChoices(); openCat(cat); };
         chipsWrap.appendChild(b);
       });
       var g=document.createElement('button'); g.textContent="Scope my project →"; g.className='go';
@@ -833,6 +847,25 @@
       m.onclick=function(){ clearChoices(); menu(); };
       chipsWrap.appendChild(m);
     });
+  }
+
+  function openCat(cat){
+    var render=function(){
+      cat.items.forEach(function(it){
+        var b=document.createElement('button'); b.textContent=it.q;
+        b.onclick=function(){
+          addMsg(it.q,'user');
+          if(it.link){ bot(it.a||("Here's the link: "+it.link.label), function(){ window.open(it.link.url,'_blank','noopener'); }); }
+          else { bot(it.a); }
+        };
+        chipsWrap.appendChild(b);
+      });
+      var back=document.createElement('button'); back.textContent='‹ Categories'; back.className='back';
+      back.onclick=function(){ clearChoices(); faqMenu(); };
+      chipsWrap.appendChild(back);
+    };
+    if(cat.items.length){ render(); }
+    else { bot(cat.soon, render); }
   }
 
   function humanPath(){
