@@ -31,7 +31,7 @@
   }
   .mono{font-family:'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;font-size:.7rem}
   .tm{font-size:.5em;vertical-align:baseline;position:relative;top:-.42em;letter-spacing:normal;opacity:.75;font-weight:600;margin-left:-.06em}
-  .wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 clamp(18px,4vw,32px)}
   a{color:inherit;text-decoration:none}
 
   /* nav */
@@ -42,9 +42,18 @@
   .brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.02em}
   .brand .logo{width:34px;height:34px;border-radius:50%;display:block;
     box-shadow:0 0 20px rgba(46,114,209,.55)}
-  .navlinks{display:flex;gap:34px}
+  .navlinks{display:flex;gap:34px;align-items:center}
   .navlinks a{color:var(--muted);font-size:.9rem;transition:.2s}
   .navlinks a:hover{color:var(--ink)}
+  .navlinks .btn{display:none}          /* the in-menu CTA only shows on mobile */
+  /* hamburger — hidden on desktop */
+  .nav-toggle{display:none;flex-direction:column;justify-content:center;gap:5px;
+    width:42px;height:42px;background:transparent;border:1px solid var(--line);
+    border-radius:10px;cursor:pointer;padding:0 10px}
+  .nav-toggle span{display:block;height:2px;border-radius:2px;background:var(--ink);transition:.25s}
+  .nav-toggle[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  .nav-toggle[aria-expanded="true"] span:nth-child(2){opacity:0}
+  .nav-toggle[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
   .btn{display:inline-flex;align-items:center;gap:8px;
     background:var(--cobalt);color:#fff;font-weight:600;font-size:.9rem;
     padding:11px 20px;border-radius:8px;transition:.2s;
@@ -76,20 +85,17 @@
   .stat b{display:block;font-size:1.9rem;font-weight:700;color:#fff}
   .stat span{color:var(--muted);font-size:.85rem}
 
-  section{padding:60px 0;position:relative;z-index:1}
-  /* ambient energy field — faint snippets of the hero waves echoing behind the lower sections.
-     screen blend drops the dark parts of the art, so only the cobalt waves glow through the gaps. */
-  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-    background:
-      url('assets/hero.png') -12% 10%/44% auto no-repeat,
-      url('assets/hero.png') 118% 46%/38% auto no-repeat,
-      url('assets/hero.png') 34% 82%/50% auto no-repeat,
-      url('assets/hero.png') 96% 104%/30% auto no-repeat;
-    opacity:.32;mix-blend-mode:screen;filter:saturate(1.25)}
-  @media (max-width:720px){body::before{opacity:.2;
-    background:
-      url('assets/hero.png') -30% 14%/78% auto no-repeat,
-      url('assets/hero.png') 130% 70%/72% auto no-repeat}}
+  section{padding:clamp(40px,7vw,60px) 0;position:relative;z-index:1}
+  /* ambient energy field — faint snippets of the hero waves echoing behind every OTHER section.
+     screen blend drops the dark parts of the art, so only the cobalt waves glow through the gaps.
+     Each .energy section carries its own snippet, alternating side for a sprinkled feel. */
+  section.energy::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+    background:var(--wave,url('assets/hero.png') 116% 34%/40% auto no-repeat);
+    opacity:.3;mix-blend-mode:screen;filter:saturate(1.25)}
+  section.energy.left::before{--wave:url('assets/hero.png') -14% 68%/44% auto no-repeat}
+  @media (max-width:720px){
+    section.energy::before{opacity:.18;--wave:url('assets/hero.png') 128% 40%/78% auto no-repeat}
+    section.energy.left::before{--wave:url('assets/hero.png') -30% 62%/78% auto no-repeat}}
   .sec-head{max-width:640px;margin-bottom:64px}
   .sec-head h2{font-size:clamp(2rem,4vw,2.9rem);font-weight:700;letter-spacing:-.02em;margin:16px 0}
   .sec-head p{color:var(--muted);font-size:1.08rem}
@@ -212,11 +218,43 @@
   footer{border-top:1px solid var(--line);padding:50px 0;color:var(--muted);font-size:.85rem}
   footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
 
-  @media(max-width:900px){
+  .nowrap-lg{white-space:nowrap}
+
+  /* tablet / small laptop */
+  @media(max-width:960px){
+    .grid3{grid-template-columns:repeat(2,1fr)}
+    .about{grid-template-columns:1fr;gap:34px}
+    .about .portrait{max-width:420px}
+  }
+
+  /* phone + collapsed nav */
+  @media(max-width:760px){
+    .nav-toggle{display:flex}
+    .nav-cta{display:none}                 /* desktop CTA hides; menu carries it */
+    .brand{font-size:.92rem}
+    nav .wrap{height:60px}
+    .navlinks{position:absolute;top:60px;left:0;right:0;flex-direction:column;
+      align-items:stretch;gap:0;background:rgba(5,7,15,.97);backdrop-filter:blur(14px);
+      border-bottom:1px solid var(--line);padding:6px 0 14px;display:none}
+    .navlinks.open{display:flex}
+    .navlinks a{padding:14px clamp(18px,4vw,32px);font-size:1rem;border-bottom:1px solid rgba(120,150,220,.06)}
+    .navlinks .btn{display:flex;justify-content:center;margin:12px clamp(18px,4vw,32px) 2px}
+
     .grid3{grid-template-columns:1fr}
     .price-grid{grid-template-columns:1fr}
-    .about{grid-template-columns:1fr}
-    .navlinks{display:none}
+    .nowrap-lg{white-space:normal}
+    .sec-head{margin-bottom:40px}
+    .lead{font-size:1.05rem}
+    .hero-cta .btn{flex:1 1 auto;justify-content:center}
+    .cta-band{padding:clamp(34px,8vw,64px) clamp(22px,6vw,64px)}
+    footer .wrap{flex-direction:column;text-align:center}
+  }
+
+  /* narrow phones */
+  @media(max-width:420px){
+    .brand{font-size:.82rem}
+    .hero-cta{flex-direction:column;align-items:stretch}
+    .stat-row{gap:24px}
   }
 
   /* ---- Sharon: floating chat agent ---- */
@@ -324,14 +362,16 @@
 
 <nav><div class="wrap">
   <div class="brand">THE DIGITAL PROTEXIONIST<sup class="tm">™</sup></div>
-  <div class="navlinks">
+  <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-controls="navlinks" aria-expanded="false"><span></span><span></span><span></span></button>
+  <div class="navlinks" id="navlinks">
     <a href="#services">Services</a>
     <a href="#partners">The Partnerpreneur</a>
     <a href="#scotbots">ScotBots<sup class="tm">™</sup></a>
     <a href="#engagement">Engagement</a>
     <a href="#buy-compute">Buy GPUs</a>
+    <a href="https://scheduler.zoom.us/scott-king-1g26k3/30-mins-with-scott" target="_blank" rel="noopener" class="btn">Start a conversation</a>
   </div>
-  <a href="https://scheduler.zoom.us/scott-king-1g26k3/30-mins-with-scott" target="_blank" rel="noopener" class="btn">Start a conversation</a>
+  <a href="https://scheduler.zoom.us/scott-king-1g26k3/30-mins-with-scott" target="_blank" rel="noopener" class="btn nav-cta">Start a conversation</a>
 </div></nav>
 
 <section id="about-scott" style="padding:74px 0 45px">
@@ -370,7 +410,7 @@
   </div>
 </header>
 
-<section id="services">
+<section id="services" class="energy">
  <div class="wrap">
   <div class="sec-head">
     <span class="mono" style="color:var(--ice)">// Impactful Work</span>
@@ -468,11 +508,11 @@
  </div>
 </section>
 
-<section id="partners" style="padding-top:40px">
+<section id="partners" class="energy left" style="padding-top:40px">
  <div class="wrap">
   <div class="sec-head">
     <span class="mono" style="color:var(--ice)">// The Partnerpreneur<sup class="tm">™</sup></span>
-    <h2 style="white-space:nowrap">A partner mentality, and mover of the needle...</h2>
+    <h2 class="nowrap-lg">A partner mentality, and mover of the needle...</h2>
     <p>Scott R. King is a results-driven, strategic digital and operational intelligence executive who helps organizations convert data, technology, and cross-functional collaboration into measurable business growth.</p>
     <p>With extensive experience leading enterprise analytics programs, digital transformations, systems optimization initiatives, and executive reporting strategies, Scott has generated millions in revenue, built high-value intelligence engines with lasting bottom-line impact, and guided organizations through complex technology and process change.</p>
     <p>Scott's mix of executive leadership, technical expertise, financial insight, and relationship-building makes him a trusted partner for business intelligence, digital transformation, analytics strategy, enterprise systems, and strategic partnerships. And his global network of vendors and partners already solving hard problems in your space means he brings more to the table than his own expertise alone.</p>
@@ -535,7 +575,7 @@
  </div>
 </section>
 
-<section id="buy-compute" style="padding-top:40px">
+<section id="buy-compute" class="energy" style="padding-top:40px">
  <div class="wrap">
   <div class="sec-head">
     <span class="mono" style="color:var(--ice)">// Buy Compute</span>
@@ -602,6 +642,19 @@
   </div>
 </div>
 
+<script>
+// mobile nav toggle
+(function(){
+  var t=document.getElementById('nav-toggle'),m=document.getElementById('navlinks');
+  if(!t||!m)return;
+  function close(){m.classList.remove('open');t.setAttribute('aria-expanded','false');}
+  t.addEventListener('click',function(){
+    var open=m.classList.toggle('open');
+    t.setAttribute('aria-expanded',open?'true':'false');
+  });
+  m.addEventListener('click',function(e){if(e.target.closest('a'))close();});
+})();
+</script>
 <script>
 (function(){
   var fab=document.getElementById('sharon-fab'),
