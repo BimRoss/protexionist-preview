@@ -274,9 +274,32 @@
   .sharon-chips button{background:transparent;border:1px solid rgba(120,150,255,.35);color:var(--ice);
     border-radius:20px;font-size:.76rem;padding:7px 12px;cursor:pointer;font-family:'Sora',sans-serif;transition:.18s}
   .sharon-chips button:hover{background:rgba(46,114,209,.16);color:#fff}
+  .sharon-chips button.sel{background:var(--cobalt);color:#fff;border-color:var(--cobalt)}
+  .sharon-chips button.go{background:var(--cobalt);color:#fff;border-color:transparent;font-weight:600;padding:7px 16px}
+  .sharon-chips button.skip{opacity:.7;border-style:dashed}
+  .sharon-chips button.cat{font-family:'JetBrains Mono',monospace;letter-spacing:.02em;border-color:rgba(120,150,255,.45)}
+  .sharon-chips button.cat::before{content:"// ";color:var(--cobalt);opacity:.9}
+  .sharon-chips button.back{border-style:dashed;opacity:.85}
+  .s-typing{align-self:flex-start;display:flex;gap:5px;align-items:center;padding:12px 14px;background:#101832;border:1px solid var(--line);border-radius:14px;border-bottom-left-radius:4px}
+  .s-typing i{width:6px;height:6px;border-radius:50%;background:var(--ice);opacity:.5;animation:sdot 1s infinite}
+  .s-typing i:nth-child(2){animation-delay:.15s}
+  .s-typing i:nth-child(3){animation-delay:.3s}
+  @keyframes sdot{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
+  .s-card{align-self:stretch;background:linear-gradient(180deg,#0c1430,#070b16);border:1px solid var(--line);border-radius:12px;padding:14px 15px;font-size:.8rem;line-height:1.5}
+  .s-card b{color:var(--ice);font-weight:600}
+  .s-card .row{display:flex;gap:8px;padding:3px 0;border-bottom:1px solid rgba(120,150,220,.08)}
+  .s-card .row:last-child{border-bottom:none}
+  .s-card .k{color:var(--muted);flex:0 0 40%}
+  .s-card .v{color:var(--ink);flex:1}
   .sharon-foot{padding:12px 16px;border-top:1px solid var(--line)}
+  .sharon-input{display:flex;gap:8px;margin-bottom:10px}
+  .sharon-input input,.sharon-input textarea{flex:1;background:#0a1024;border:1px solid var(--line);color:var(--ink);
+    border-radius:10px;font-size:.84rem;padding:10px 12px;font-family:'Sora',sans-serif;resize:none;outline:none}
+  .sharon-input input:focus,.sharon-input textarea:focus{border-color:var(--cobalt)}
+  .sharon-input button{background:var(--cobalt);color:#fff;border:none;border-radius:10px;padding:0 15px;cursor:pointer;font-weight:600;font-family:'Sora',sans-serif}
   .sharon-foot a{display:block;text-align:center;background:var(--cobalt);color:#fff;font-weight:600;font-size:.86rem;
     padding:11px;border-radius:10px;box-shadow:0 10px 30px -10px rgba(47,91,255,.8)}
+  .sharon-foot a.ghost{background:transparent;color:var(--ice);box-shadow:inset 0 0 0 1px var(--line);margin-top:8px}
 
   @media(max-width:520px){
     #sharon-panel{right:0;left:0;bottom:0;width:100%;max-width:100%;height:82vh;border-radius:20px 20px 0 0}
@@ -557,6 +580,10 @@
 
   <div class="sharon-chips" id="sharon-chips"></div>
   <div class="sharon-foot">
+    <div class="sharon-input" id="sharon-input" style="display:none">
+      <input id="sharon-text" type="text" autocomplete="off" placeholder="Type your answer…" />
+      <button id="sharon-send" type="button">Send</button>
+    </div>
     <a href="#contact" id="sharon-cta">Start a conversation →</a>
   </div>
 </div>
@@ -570,7 +597,14 @@
       barEl=document.getElementById('sharon-bar'),
       replay=document.getElementById('sharon-replay'),
       body=document.getElementById('sharon-body'),
-      chipsWrap=document.getElementById('sharon-chips');
+      chipsWrap=document.getElementById('sharon-chips'),
+      inputRow=document.getElementById('sharon-input'),
+      textEl=document.getElementById('sharon-text'),
+      sendBtn=document.getElementById('sharon-send'),
+      cta=document.getElementById('sharon-cta');
+
+  var SCHED="https://scheduler.zoom.us/scott-king-1g26k3/30-mins-with-scott";
+  var INBOX="protexions@protexionist.com";
 
   // scripted intro "video" — timed caption lines over the animated waveform
   var script=[
@@ -603,51 +637,314 @@
     (function step(){ if(i<=str.length){ capEl.textContent=str.slice(0,i++); setTimeout(step,18);} })();
   }
 
-  // FAQ knowledge base (canned, static)
-  var faqs=[
-    {q:"What do you protect?",
-     a:"We safeguard the documents and data behind your business, including contracts, IP, and client records, with the right controls, backups, and access hygiene so nothing walks out the door."},
-    {q:"What does The Digital Protexionist™ do?",
-     a:"Three pillars: Digital Strategy, Digital Solutions, and Digital Partnerships. We bring the human touch to a digital world: strategy through delivery, and we stand behind how it performs."},
-    {q:"How do we start?",
-     a:"Tell us what you're driving toward and we'll scope it together. Tap “Start a conversation” below and Scott's team picks it up directly."},
-    {q:"Are you a real person?",
-     a:"I'm a ScotBot™, one of the agents that carry the busywork. For the judgment calls, you'll talk to a real human on the team. Partner mentality, not a vendor."}
-  ];
+  // ---------- collected profile + helpers ----------
+  var P={ visitor:'first', preferredContact:[], interests:[] };
+  var queue=[];
+
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function firstName(){ return (P.name||'').trim().split(/\s+/)[0] || 'there'; }
+  function resolve(t){ return (typeof t==='function')?t():t; }
+  function isEmail(v){ return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v); }
 
   function addMsg(text,who){
     var m=document.createElement('div');
     m.className='s-msg '+(who||'bot'); m.textContent=text;
     body.appendChild(m); body.scrollTop=body.scrollHeight;
   }
-  function renderChips(){
-    chipsWrap.innerHTML='';
-    faqs.forEach(function(f){
-      var b=document.createElement('button'); b.textContent=f.q;
-      b.onclick=function(){
-        addMsg(f.q,'user');
-        setTimeout(function(){ addMsg(f.a,'bot'); }, 380);
-      };
+  function addCard(html){
+    var m=document.createElement('div'); m.className='s-card'; m.innerHTML=html;
+    body.appendChild(m); body.scrollTop=body.scrollHeight;
+  }
+  function clearChoices(){ chipsWrap.innerHTML=''; inputRow.style.display='none'; }
+
+  var typingEl=null;
+  function typing(on){
+    if(on){ if(typingEl) return; typingEl=document.createElement('div'); typingEl.className='s-typing';
+      typingEl.innerHTML='<i></i><i></i><i></i>'; body.appendChild(typingEl); body.scrollTop=body.scrollHeight; }
+    else if(typingEl){ typingEl.remove(); typingEl=null; }
+  }
+  function bot(text,cb){
+    typing(true);
+    setTimeout(function(){ typing(false); addMsg(resolve(text),'bot'); if(cb) cb(); }, 640);
+  }
+
+  // ---------- footer CTAs ----------
+  function setCta(href,label,newtab){
+    cta.style.display='block'; cta.textContent=label; cta.href=href;
+    if(newtab){ cta.target='_blank'; cta.rel='noopener'; } else { cta.removeAttribute('target'); }
+    cta.onclick=null;
+  }
+  var ghostEl=null;
+  function addGhost(href,label,newtab){
+    if(!ghostEl){ ghostEl=document.createElement('a'); ghostEl.className='ghost';
+      document.querySelector('.sharon-foot').appendChild(ghostEl); }
+    ghostEl.style.display='block'; ghostEl.textContent=label; ghostEl.href=href;
+    if(newtab){ ghostEl.target='_blank'; ghostEl.rel='noopener'; }
+  }
+
+  // ---------- step primitives (queue-driven) ----------
+  function run(){ if(queue.length){ (queue.shift())(); } }
+  function act(fn){ queue.push(fn); }
+  function say(text){ queue.push(function(){ bot(text, run); }); }
+
+  function single(prompt,opts,field,after){
+    queue.push(function(){
+      bot(prompt, function(){
+        clearChoices();
+        opts.forEach(function(o){
+          var label=o.label||o, val=(o.value!==undefined)?o.value:label;
+          var b=document.createElement('button'); b.textContent=label;
+          b.onclick=function(){
+            addMsg(label,'user'); clearChoices();
+            if(field) P[field]=val;
+            if(after) after(val); else run();
+          };
+          chipsWrap.appendChild(b);
+        });
+      });
+    });
+  }
+
+  function multi(prompt,opts,field,after){
+    queue.push(function(){
+      bot(prompt, function(){
+        clearChoices(); var sel=[];
+        opts.forEach(function(o){
+          var label=o.label||o, val=(o.value!==undefined)?o.value:label;
+          var b=document.createElement('button'); b.textContent=label;
+          b.onclick=function(){
+            var i=sel.indexOf(val);
+            if(i>=0){ sel.splice(i,1); b.classList.remove('sel'); }
+            else { sel.push(val); b.classList.add('sel'); }
+          };
+          chipsWrap.appendChild(b);
+        });
+        var go=document.createElement('button'); go.textContent='Continue →'; go.className='go';
+        go.onclick=function(){
+          if(!sel.length) return;
+          addMsg(sel.join(', '),'user'); clearChoices();
+          if(field) P[field]=sel.slice();
+          if(after) after(sel); else run();
+        };
+        chipsWrap.appendChild(go);
+      });
+    });
+  }
+
+  var currentText=null;
+  function ask(prompt,field,o){
+    o=o||{};
+    queue.push(function(){
+      bot(prompt, function(){
+        clearChoices();
+        inputRow.style.display='flex';
+        textEl.value=''; textEl.placeholder=o.placeholder||'Type your answer…'; textEl.focus();
+        if(o.skip){
+          var s=document.createElement('button'); s.textContent='Skip'; s.className='skip';
+          s.onclick=function(){ clearChoices(); if(field) P[field]=''; run(); };
+          chipsWrap.appendChild(s);
+        }
+        currentText=function(){
+          var v=textEl.value.trim();
+          if(!v) return;
+          if(o.validate && !o.validate(v)){ shake(); return; }
+          addMsg(v,'user'); clearChoices(); if(field) P[field]=v; run();
+        };
+      });
+    });
+  }
+  function shake(){ textEl.style.borderColor='#e0574e'; setTimeout(function(){ textEl.style.borderColor=''; },550); }
+  function fireText(){ if(currentText) currentText(); }
+  sendBtn.onclick=fireText;
+  textEl.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); fireText(); } });
+
+  // ---------- summary / email bridge ----------
+  function summaryCard(){
+    var rows=[];
+    function add(k,v){ if(v&&(!Array.isArray(v)||v.length)) rows.push('<div class="row"><span class="k">'+k+'</span><span class="v">'+esc(Array.isArray(v)?v.join(', '):v)+'</span></div>'); }
+    add('Visitor', P.visitor==='repeat'?'Returning':'First time');
+    add('Source',P.visitPrompt); add('Name',P.name); add('Industry',P.industry);
+    add('Company',P.company); add('Title',P.title); add('Email',P.email);
+    add('Phone',P.phone); add('WhatsApp',P.wa); add('Preferred',P.preferredContact);
+    add('Interests',P.interests); add('Overview',P.overview); add('Size',P.size);
+    add('Timing',P.timing); add('Next step',P.nextStep);
+    add('Project type',P.projectType); add('Focus area',P.functionalArea);
+    add('Objective',P.objective); add('Investment',P.investment); add('Target #',P.investmentNumber);
+    add('Notes',P.notes);
+    addCard('<b>Your brief</b>'+rows.join(''));
+  }
+  function scriptText(){
+    var L=["The Digital Protexionist — intake via Sharon",
+           "Visitor: "+(P.visitor==='repeat'?'Returning visitor':'First-time visitor'),""];
+    function line(k,v){ if(v&&(!Array.isArray(v)||v.length)) L.push(k+": "+(Array.isArray(v)?v.join(', '):v)); }
+    line("What prompted the visit",P.visitPrompt);
+    line("Name",P.name); line("Industry",P.industry); line("Company",P.company);
+    line("Title",P.title); line("Email",P.email); line("Phone",P.phone); line("WhatsApp",P.wa);
+    line("Preferred contact",P.preferredContact); line("Areas of interest",P.interests);
+    line("Overview / pain-points",P.overview);
+    line("Size",P.size); line("Timing",P.timing); line("Next step",P.nextStep);
+    line("Project type",P.projectType); line("Functional area",P.functionalArea);
+    line("Primary objective",P.objective); line("Investment level",P.investment);
+    line("Target number",P.investmentNumber); line("Other notes",P.notes);
+    L.push(""); L.push("— Captured by Sharon at protexionist.com");
+    return L.join("\n");
+  }
+  function mailtoHref(subject){ return "mailto:"+INBOX+"?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(scriptText()); }
+
+  // ---------- FAQ knowledge base (canned, static) ----------
+  var faqs=[
+    {q:"What do you protect?",
+     a:"We safeguard the documents and data behind your business, including contracts, IP, and client records, with the right controls, backups, and access hygiene so nothing walks out the door."},
+    {q:"What does The Digital Protexionist™ do?",
+     a:"Three pillars: Digital Strategy, Digital Solutions, and Digital Partnerships. We bring the human touch to a digital world: strategy through delivery, and we stand behind how it performs."},
+    {q:"How do we start?",
+     a:"Tell me what you're driving toward and we'll scope it together. Tap “Scope my project” and I'll package it for Scott directly."},
+    {q:"Are you a real person?",
+     a:"I'm a ScotBot™, one of the agents that carry the busywork. For the judgment calls, you'll talk to Scott himself. Partner mentality, not a vendor."}
+  ];
+
+  // ---------- conversation paths ----------
+  function menu(){
+    clearChoices();
+    var opts=[
+      {label:"Let's scope my project", fn:buildFlow},
+      {label:"I have a question", fn:faqMenu},
+      {label:"Talk to a human", fn:humanPath}
+    ];
+    opts.forEach(function(o){
+      var b=document.createElement('button'); b.textContent=o.label;
+      b.onclick=function(){ addMsg(o.label,'user'); clearChoices(); o.fn(); };
       chipsWrap.appendChild(b);
     });
+  }
+
+  function faqMenu(){
+    clearChoices();
+    bot("Happy to help. Pick a question, or jump into scoping when you're ready.", function(){
+      faqs.forEach(function(f){
+        var b=document.createElement('button'); b.textContent=f.q;
+        b.onclick=function(){ addMsg(f.q,'user'); bot(f.a); };
+        chipsWrap.appendChild(b);
+      });
+      var g=document.createElement('button'); g.textContent="Scope my project →"; g.className='go';
+      g.onclick=function(){ clearChoices(); addMsg("Let's scope my project",'user'); buildFlow(); };
+      chipsWrap.appendChild(g);
+      var m=document.createElement('button'); m.textContent='‹ Menu';
+      m.onclick=function(){ clearChoices(); menu(); };
+      chipsWrap.appendChild(m);
+    });
+  }
+
+  function humanPath(){
+    bot("Scott handles the human conversations himself. The fastest way to reach him is to grab a 30-minute slot on his calendar, an exploratory session, not a sales call.", function(){
+      setCta(SCHED,"Book 30 min with Scott →", true);
+      clearChoices();
+      var b=document.createElement('button'); b.textContent='‹ Menu'; b.className='go';
+      b.onclick=function(){ clearChoices(); menu(); };
+      chipsWrap.appendChild(b);
+    });
+  }
+
+  function buildFlow(){
+    queue=[];
+    single("First, what prompted your visit today?",
+      ["LinkedIn Post","Recommended","Ad Response","Other"], "visitPrompt");
+    say("Great, thank you. Help me understand who I'm speaking with.");
+    ask("What's your name?", "name", {placeholder:"Full name"});
+    ask(function(){ return "Nice to meet you, "+firstName()+". What industry are you in?"; }, "industry", {placeholder:"Industry"});
+    ask("Company name?", "company", {placeholder:"Company"});
+    ask("And your title or role?", "title", {placeholder:"Title"});
+    ask("Best work email?", "email", {placeholder:"you@company.com", validate:isEmail});
+    ask("Phone number? (optional)", "phone", {placeholder:"Phone", skip:true});
+    ask("WhatsApp? (optional)", "wa", {placeholder:"WhatsApp", skip:true});
+    multi("How would you prefer we reach you?",
+      ["Email","Phone","WhatsApp","All"], "preferredContact");
+    multi("Which areas are you interested in? (pick any)",
+      ["Digital Strategy","Digital Solutions","Digital Partnerships"], "interests");
+    ask("Give me a quick overview and the main pain-points you're trying to solve.", "overview", {placeholder:"A sentence or two…"});
+    single("How would you size the need and complexity?",
+      ["Small","Medium","Large"], "size");
+    single("What's your timing to start?",
+      ["Immediate","1-3 Months","3+ Months"], "timing");
+    single("Last one for now, what would you like to do next?",
+      ["Book a Zoom with Scott","Free scoping & estimation","Return later"], "nextStep", function(v){
+        if(v==="Book a Zoom with Scott") zoomPath();
+        else if(v==="Free scoping & estimation") scopePath();
+        else returnPath();
+      });
+    run();
+  }
+
+  function zoomPath(){
+    bot("Perfect. I'll open Scott's calendar so you can grab a 30-minute slot. I've saved your details so it's a working session, not a sales call.", function(){
+      summaryCard();
+      setCta(SCHED,"Open Scott's calendar →", true);
+      addGhost(mailtoHref("New enquiry via Sharon"),"Also email my details to Scott", false);
+      bot("That's everything I need, thanks. See you on the call.");
+    });
+    window.open(SCHED,'_blank');
+  }
+
+  function scopePath(){
+    queue=[];
+    say("Love it. A few more questions and I'll package this into a scoping brief for Scott.");
+    single("At a high level, how would you categorize the project?",
+      ["Start-up / Scale for Growth","Rescue & Recovery","Digitally Transform"], "projectType");
+    single("Which functional area is the focus?",
+      ["Marketing / Sales","Finance / HR / Legal","Product / IT","Customer Success","Entire Operation"], "functionalArea");
+    single("Your primary objective?",
+      ["Increase Market Exposure","Increase Revenue","Reduce Cost","Increase Revenue + Reduce Cost"], "objective");
+    single("Anticipated level of investment?",
+      ["Less than $25,000","$25,001 - $50,000","$50,000+"], "investment");
+    ask("If you have one in mind, an actual number? (optional)", "investmentNumber", {placeholder:"$", skip:true});
+    ask("Anything else we should be aware of? Data or systems mess, headcount, other vendors, must-use systems…", "notes", {placeholder:"Optional notes", skip:true});
+    act(function(){
+      bot("That's everything, thank you. Here's your scoping brief, packaged for Scott.", function(){
+        summaryCard();
+        setCta(mailtoHref("Free scoping request via Sharon"),"Send this brief to Scott →", false);
+        addGhost(SCHED,"…or book a Zoom instead", true);
+        bot("Tap the button to fire it over, and Scott will follow up with a scope and estimate.");
+      });
+    });
+    run();
+  }
+
+  function returnPath(){
+    bot("No problem at all. I'll get your details to Scott so he can follow up when you're ready to add more definition.", function(){
+      summaryCard();
+      setCta(mailtoHref("Thank you for your visit! Talk more soon…"),"Email my details to Scott →", false);
+      bot("Tap below to send Scott your summary, and you'll hear back soon. Looking forward, ~Scott.");
+    });
+  }
+
+  // ---------- open / close ----------
+  function markVisit(){
+    try{
+      var n=parseInt(localStorage.getItem('tdp_sharon_visits')||'0',10);
+      P.visitor = n>0 ? 'repeat' : 'first';
+      localStorage.setItem('tdp_sharon_visits', String(n+1));
+    }catch(e){ P.visitor='first'; }
   }
 
   var opened=false;
   function open(){
     panel.classList.add('open'); fab.classList.add('open');
-    if(!opened){
-      opened=true;
-      renderChips();
-      runIntro();
-      setTimeout(function(){ addMsg("Hi! I'm Sharon. Pick a question below, or start a conversation and I'll route you to the team.",'bot'); }, DUR-1200);
-    }
+    if(opened) return; opened=true;
+    markVisit();
+    runIntro();
+    setTimeout(function(){
+      var hi = P.visitor==='repeat'
+        ? "Welcome back! Good to see you again. Ask me anything, or let's pick up scoping your project."
+        : "Good day! I'm Sharon, Scott's FAQ and pre-sale agent. I can answer questions or set up a quick scoping conversation. What would you like to do?";
+      bot(hi, menu);
+    }, DUR-1200);
   }
   function close(){ panel.classList.remove('open'); fab.classList.remove('open'); }
 
+  cta.style.display='none';
   fab.onclick=open;
   document.getElementById('sharon-close').onclick=close;
   replay.onclick=runIntro;
-  document.getElementById('sharon-cta').onclick=function(){ close(); };
 })();
 </script>
 </body>
